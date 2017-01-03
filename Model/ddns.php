@@ -83,17 +83,47 @@ class Ddns {
     /*
      * 新建域名记录
      */
-    public function createRecord()
+    public function createRecord($ip = '')
     {
-        echo 'new';
+        if (empty($ip)) $ip = $this->getMyIP();
+
+        $data = array(
+            'domain_id' => $this->domain_id,
+            'sub_domain' => $this->sub_domain,
+            'record_type' => 'A',
+            'record_line' => '默认',
+            'value' => $ip,
+            'ttl' => '600'
+        );
+
+        $createNewRecord = $this->apiData('Record.Create', $data);
+
+        if ($createNewRecord) {
+
+        }
     }
 
     /*
      * 修改域名记录
      */
-    public function modifyRecord()
+    public function modifyRecord($ip = '')
     {
-        echo 'modify';
+        if (empty($ip)) $ip = $this->getMyIP();
+
+        $data = array(
+            'domain_id' => $this->domain_id,
+            'record_id' => $this->getSubDomainRecordId($this->sub_domain),
+            'sub_domain' => $this->sub_domain,
+            'record_type' => 'A',
+            'record_line' => '默认',
+            'value' => $ip
+        );
+
+        $modifyRecord = $this->apiData('Record.Modify', $data);
+
+        if ($modifyRecord) {
+
+        }
     }
 
     /*
