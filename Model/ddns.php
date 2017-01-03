@@ -98,8 +98,11 @@ class Ddns {
 
         $createNewRecord = $this->apiData('Record.Create', $data);
 
-        if ($createNewRecord) {
 
+        if ($createNewRecord['status']['code'] == 1) {
+            echo '添加成功';
+        } else {
+            $this->log($createNewRecord['status']['code'], $createNewRecord['status']['message']);
         }
     }
 
@@ -121,8 +124,10 @@ class Ddns {
 
         $modifyRecord = $this->apiData('Record.Modify', $data);
 
-        if ($modifyRecord) {
-
+        if ($modifyRecord['status']['code'] == 1) {
+            echo '修改成功';
+        } else {
+            $this->log($modifyRecord['status']['code'], $modifyRecord['status']['message']);
         }
     }
 
@@ -131,7 +136,9 @@ class Ddns {
      */
     public function getMyIP()
     {
-        $ip = file_get_contents('http://greak.net/ip');
+//        $ip = file_get_contents('http://greak.net/ip');
+//        $ip = file_get_contents('http://pv.sohu.com/cityjson?ie=utf-8');
+        $ip = file_get_contents('http://www.leadnt.com/tools/ip.php');
 
         if (!$ip) {
             $this->error = '获取ip失败';
@@ -139,6 +146,19 @@ class Ddns {
         }
 
         return $ip;
+    }
+
+    /*
+     * 日志记录
+     */
+    public function log($code = '', $msg = '')
+    {
+        $str = '【'. date('Y年m月d日 H:i:s') . '】' . 'CODE:' . $code . ', MSG:' . $msg . PHP_EOL;
+
+        $filename = LOG_PATH . 'error.log';
+        $result = file_put_contents($filename, $str, FILE_APPEND);
+
+        return $result ? true : false;
     }
 
     /*
