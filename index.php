@@ -1,14 +1,15 @@
 <?php
 define('API_URL', 'https://dnsapi.cn/'); //API接口url
 define('LOG_PATH', dirname(__FILE__) . '/'); //log存放路径
+define('CONFIG_PATH', dirname(__FILE__) . '/'); //配置文件路径
 
 require 'Model/ddns.php';
 
 use Model\Ddns;
 
-!file_exists('config.php') && exit('配置文件不存在');
+!file_exists(CONFIG_PATH . 'config.php') && exit('配置文件不存在');
 
-$config_arr = include 'config.php';
+$config_arr = include(CONFIG_PATH . 'config.php');
 $TOKEN = $config_arr['TOKEN_ID'] .','. $config_arr['TOKEN'];
 
 $ddns = new Ddns($TOKEN, $config_arr['DOMAIN'], $config_arr['SUB']); //实例化
