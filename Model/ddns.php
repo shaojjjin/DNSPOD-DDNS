@@ -98,9 +98,9 @@ class Ddns {
 
         $createNewRecord = $this->apiData('Record.Create', $data);
 
-
         if ($createNewRecord['status']['code'] == 1) {
-            echo '添加成功';
+            $str = '添加成功，当前ip地址为：' . $ip;
+            $this->log('002', $str);
         } else {
             $this->log($createNewRecord['status']['code'], $createNewRecord['status']['message']);
         }
@@ -113,10 +113,18 @@ class Ddns {
     {
         if (empty($ip)) $ip = $this->getMyIP();
 
+        $subRecordInfo = $this->getSubRecordInfo($this->getSubDomainRecordId($this->sub_domain));
+
+        if ($subRecordInfo['value'] == $ip) {
+//            $this->log('000', '当前ip与记录ip一致，无需修改');
+            echo '当前ip与记录ip一致，无需修改';
+            return false;
+        }
+
         $data = array(
-            'domain_id' => $this->domain_id,
-            'record_id' => $this->getSubDomainRecordId($this->sub_domain),
-            'sub_domain' => $this->sub_domain,
+            'domain_id'   => $this->domain_id,
+            'record_id'   => $this->getSubDomainRecordId($this->sub_domain),
+            'sub_domain'  => $this->sub_domain,
             'record_type' => 'A',
             'record_line' => '默认',
             'value' => $ip
@@ -125,12 +133,30 @@ class Ddns {
         $modifyRecord = $this->apiData('Record.Modify', $data);
 
         if ($modifyRecord['status']['code'] == 1) {
-            echo '修改成功';
+            $str = '修改成功，当前ip地址为：' . $ip;
+            $this->log('001', $str);
         } else {
             $this->log($modifyRecord['status']['code'], $modifyRecord['status']['message']);
         }
     }
 
+    /*
+     * 获取子域名相关信息
+     */
+    public function getSubRecordInfo($record_id = '')
+    {
+        $getRecordInfo = $this->apiData('Record.Info', array(
+            'domain'    => $this->domain,
+            'record_id' => $record_id
+        ));
+
+        if ($getRecordInfo['status']['code'] == 1) {
+            return $getRecordInfo['record'];
+        } else {
+            $this->log($getRecordInfo['status']['code'], $getRecordInfo['status']['message']);
+            return false;
+        }
+    }
     /*
      * 获取用户当前ip
      */
@@ -145,7 +171,7 @@ class Ddns {
             return false;
         }
 
-        return $ip;
+        return trim($ip);
     }
 
     /*
@@ -154,6 +180,8 @@ class Ddns {
     public function log($code = '', $msg = '')
     {
         $str = '【'. date('Y年m月d日 H:i:s') . '】' . 'CODE:' . $code . ', MSG:' . $msg . PHP_EOL;
+
+        echo $str;
 
         $filename = LOG_PATH . 'error.log';
         $result = file_put_contents($filename, $str, FILE_APPEND);
