@@ -190,6 +190,27 @@ class Ddns {
     }
 
     /*
+     * 多次请求缓存当前ip
+     * @param int $n 缓存次数
+     */
+    public function cacheIPs($n = 1)
+    {
+        $arr = array();
+        for ($i = 0; $i < $n; $i++) {
+            $arr[] = $this->getMyIP();
+        }
+
+        $file = CACHE_IPS_FILE;
+        $result = file_put_contents($file, json_encode($arr));
+
+        if ($result == false) {
+            $this->log('002', '缓存ip失败');
+        } else {
+            echo '缓存成功';
+        }
+    }
+
+    /*
      * curl api 操作
      */
     public function apiData($api = '', $param = array(), $method = 'post', $exit = false)
