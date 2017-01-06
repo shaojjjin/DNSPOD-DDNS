@@ -205,8 +205,12 @@ class Ddns {
             $arr[] = $this->getMyIP();
         }
 
-        $file = CACHE_IPS_FILE;
-        $result = file_put_contents($file, json_encode($arr));
+        $data = array(
+            'create_time' => $startTime,
+            'data' => $arr
+        );
+
+        $result = file_put_contents(CACHE_IPS_FILE, json_encode($data));
 
         if ($result == false) {
             $this->log('002', '缓存ip失败');
@@ -224,8 +228,14 @@ class Ddns {
     public function checkIP()
     {
         !file_exists(CACHE_IPS_FILE) && $this->cacheIPs(12);
-        $cacheIPs = json_decode(file_get_contents(CACHE_IPS_FILE), true);
-        return (in_array($this->ip, $cacheIPs)) ? false : true;
+        $cache = json_decode(file_get_contents(CACHE_IPS_FILE), true);
+
+        //缓存300秒
+        if (time() - $cache['create_time'] > 300) {
+            $this->cacheIPs();
+        }
+
+        return (in_array($this->ip, $cache['data'])) ? true : false;
     }
 
     /*
