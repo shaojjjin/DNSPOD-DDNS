@@ -199,6 +199,7 @@ class Ddns {
     public function cacheIPs($n = 1)
     {
         $arr = array();
+        $startTime = time();
         for ($i = 0; $i < $n; $i++) {
             $arr[] = $this->getMyIP();
         }
@@ -209,7 +210,10 @@ class Ddns {
         if ($result == false) {
             $this->log('002', '缓存ip失败');
         } else {
-            echo '缓存成功';
+            $useTime = (time() - $startTime) / 60; //使用多少秒
+            $str = '缓存成功，共耗时' . $useTime . '秒';
+            echo $str;
+            $this->log(1, $str);
         }
     }
 
