@@ -15,6 +15,8 @@ class Ddns {
     private $domain_id = '';
     // 错误信息
     public $error = '';
+    // ip记录
+    public $ip = '';
 
     /*
      * 初始化
@@ -92,7 +94,7 @@ class Ddns {
             'sub_domain' => $this->sub_domain,
             'record_type' => 'A',
             'record_line' => '默认',
-            'value' => $ip,
+            'value' => $this->ip,
             'ttl' => '600'
         );
 
@@ -127,7 +129,7 @@ class Ddns {
             'sub_domain'  => $this->sub_domain,
             'record_type' => 'A',
             'record_line' => '默认',
-            'value' => $ip
+            'value' => $this->ip
         );
 
         $modifyRecord = $this->apiData('Record.Modify', $data);
@@ -167,10 +169,11 @@ class Ddns {
         $ip = file_get_contents('http://www.leadnt.com/tools/ip.php');
 
         if (!$ip) {
-            $this->error = '获取ip失败';
+            $this->log('003', '获取当前ip失败');
             return false;
         }
 
+        $this->ip = $ip;
         return trim($ip);
     }
 
@@ -208,6 +211,16 @@ class Ddns {
         } else {
             echo '缓存成功';
         }
+    }
+
+    /*
+     * 检查当前ip是否已经发生变化
+     */
+    public function checkIP()
+    {
+        !file_exists(CACHE_IPS_FILE) && $this->cacheIPs(12);
+        $cacheIPs = json_decode(file_get_contents(CACHE_IPS_FILE), true);
+        return (in_array($this->ip, $cacheIPs)) ? true : false;
     }
 
     /*
