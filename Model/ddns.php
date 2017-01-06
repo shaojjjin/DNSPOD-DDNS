@@ -224,7 +224,7 @@ class Ddns {
     {
         !file_exists(CACHE_IPS_FILE) && $this->cacheIPs(12);
         $cacheIPs = json_decode(file_get_contents(CACHE_IPS_FILE), true);
-        return (in_array($this->ip, $cacheIPs)) ? true : false;
+        return (in_array($this->ip, $cacheIPs)) ? false : true;
     }
 
     /*
