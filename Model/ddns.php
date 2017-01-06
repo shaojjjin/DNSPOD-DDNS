@@ -87,14 +87,14 @@ class Ddns {
      */
     public function createRecord($ip = '')
     {
-        if (empty($ip)) $ip = $this->getMyIP();
+        if (empty($ip)) $ip = $this->ip;
 
         $data = array(
             'domain_id' => $this->domain_id,
             'sub_domain' => $this->sub_domain,
             'record_type' => 'A',
             'record_line' => '默认',
-            'value' => $this->ip,
+            'value' => $ip,
             'ttl' => '600'
         );
 
@@ -113,15 +113,15 @@ class Ddns {
      */
     public function modifyRecord($ip = '')
     {
-        if (empty($ip)) $ip = $this->getMyIP();
+        if (empty($ip)) $ip = $this->ip;
 
-        $subRecordInfo = $this->getSubRecordInfo($this->getSubDomainRecordId($this->sub_domain));
-
-        if ($subRecordInfo['value'] == $ip) {
+//        $subRecordInfo = $this->getSubRecordInfo($this->getSubDomainRecordId($this->sub_domain));
+//
+//        if ($subRecordInfo['value'] == $ip) {
 //            $this->log('000', '当前ip与记录ip一致，无需修改');
-            echo '当前ip与记录ip一致，无需修改';
-            return false;
-        }
+//            echo '当前ip与记录ip一致，无需修改';
+//            return false;
+//        }
 
         $data = array(
             'domain_id'   => $this->domain_id,
@@ -129,7 +129,7 @@ class Ddns {
             'sub_domain'  => $this->sub_domain,
             'record_type' => 'A',
             'record_line' => '默认',
-            'value' => $this->ip
+            'value' => $ip
         );
 
         $modifyRecord = $this->apiData('Record.Modify', $data);
