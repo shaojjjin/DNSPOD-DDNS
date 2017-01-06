@@ -27,6 +27,8 @@ class Ddns {
         $this->domain     = $domain;
         $this->sub_domain = $sub;
         $this->domain_id  = $this->getDomainId();
+
+        $this->ip = $this->getMyIP();
     }
 
     /*
@@ -39,7 +41,7 @@ class Ddns {
             $domainInfo      = $getDomainInfo['domain'];
             return $domainInfo['id'];
         } else {
-            //TODO 记录失败信息
+            $this->log($getDomainInfo['status']['code'], $getDomainInfo['status']['message']);
         }
     }
     
@@ -78,7 +80,7 @@ class Ddns {
             $recordInfos = $recordData['records'];
             return  $recordInfos[0]['id'];
         } else {
-            //TODO 记录失败信息
+            return false;
         }
     }
 
@@ -173,7 +175,6 @@ class Ddns {
             return false;
         }
 
-        $this->ip = $ip;
         return trim($ip);
     }
 

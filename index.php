@@ -15,7 +15,6 @@ $config_arr = include(CONFIG_PATH . 'config.php');
 $TOKEN = $config_arr['TOKEN_ID'] .','. $config_arr['TOKEN'];
 
 $ddns = new Ddns($TOKEN, $config_arr['DOMAIN'], $config_arr['SUB']); //实例化
-$ip   = $ddns->getMyIP();
 //判断命令行还是网页
 //if (PHP_SAPI === 'cli') {
 //    $argc   = getopt('a::');
