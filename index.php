@@ -25,7 +25,7 @@ if (PHP_SAPI === 'cli') {
 }
 
 if ($action == 'cache') {
-    $ddns->cacheIPs();
+    $ddns->cacheIPs(8);
 }
 
 $isUpdate = $ddns->checkIP();

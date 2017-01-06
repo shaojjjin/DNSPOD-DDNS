@@ -227,12 +227,12 @@ class Ddns {
      */
     public function checkIP()
     {
-        !file_exists(CACHE_IPS_FILE) && $this->cacheIPs(12);
+        !file_exists(CACHE_IPS_FILE) && $this->cacheIPs(8);
         $cache = json_decode(file_get_contents(CACHE_IPS_FILE), true);
 
         //缓存300秒
-        if (time() - $cache['create_time'] > 300) {
-            $this->cacheIPs();
+        if (time() - $cache['create_time'] > 3600) {
+            $this->cacheIPs(8);
         }
 
         return (in_array($this->ip, $cache['data'])) ? true : false;
