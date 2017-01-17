@@ -17,7 +17,7 @@ $TOKEN = $config_arr['TOKEN_ID'] .','. $config_arr['TOKEN'];
 $ddns = new Ddns($TOKEN, $config_arr['DOMAIN'], $config_arr['SUB']); //实例化
 
 // 判断命令行还是网页
-if (PHP_SAPI === 'cli') {
+if (PHP_SAPI == 'cli') {
     $argc   = getopt('a::');
     $action = (isset($argc['a'])) ? $argc['a'] : '';
 } else {
