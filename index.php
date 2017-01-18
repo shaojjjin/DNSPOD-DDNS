@@ -5,18 +5,28 @@ define('LOG_PATH', dirname(__FILE__) . '/'); //log存放路径
 define('CONFIG_PATH', dirname(__FILE__) . '/'); //配置文件路径
 define('CACHE_IPS_FILE', dirname(__FILE__) . '/cacheIPs.txt'); //ip缓存文件
 
-!file_exists(CONFIG_PATH . 'config.php') && exit('配置文件不存在');
-
-$config_arr = include(CONFIG_PATH . 'config.php');
-$TOKEN      = $config_arr['TOKEN_ID'] .','. $config_arr['TOKEN'];
-$ServerChan_Url = $config_arr['SERVERCHAN_URL'].$config_arr['SERVERCHAN_KEY'].'.send';
-
-require 'functions.php';
 require 'Model/ddns.php';
 
 use Model\Ddns;
 
+!file_exists(CONFIG_PATH . 'config.php') && exit('配置文件不存在');
+
+$config_arr = include(CONFIG_PATH . 'config.php');
+$TOKEN = $config_arr['TOKEN_ID'] .','. $config_arr['TOKEN'];
+
 $ddns = new Ddns($TOKEN, $config_arr['DOMAIN'], $config_arr['SUB']); //实例化
+
+// 判断命令行还是网页
+if (PHP_SAPI === 'cli') {
+    $argc   = getopt('a::');
+    $action = (isset($argc['a'])) ? $argc['a'] : '';
+} else {
+    $action = (isset($_GET['a'])) ? $_GET['a'] : '';
+}
+
+if ($action == 'cache') {
+    $ddns->cacheIPs(8);
+}
 
 $isUpdate = $ddns->checkIP();
 
@@ -28,9 +38,6 @@ if ($isUpdate == false) { //已经发生变化了
     } else {
         //执行修改操作
         $ddns->modifyRecord();
-        $title = 'ip地址发生变化啦～';
-        $content = '你的ip地址已经发生变化啦，当前ip地址是：' . $ddns->ip;
-        talkToServerChan($ServerChan_Url, $title, $content);
     }
 } else {
     echo '当前ip与记录ip一致，无需修改';
