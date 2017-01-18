@@ -230,6 +230,7 @@ class Ddns {
         if (!file_exists(CACHE_IPS_FILE)) {
             $this->modifyRecord();
             $this->cacheIPs(8);
+            return true;
         }
         $cache = json_decode(file_get_contents(CACHE_IPS_FILE), true);
 
