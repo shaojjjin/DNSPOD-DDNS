@@ -218,6 +218,7 @@ class Ddns {
     {
         $arr = array();
         $startTime = time();
+
         for ($i = 0; $i < $n; $i++) {
             $arr[] = $this->getMyIP();
         }
@@ -239,16 +240,12 @@ class Ddns {
         }
     }
 
-    /*
+    /**
      * 检查当前ip是否已经发生变化
+     * @return boolean
      */
     public function checkIP()
     {
-        if (!file_exists(CACHE_IPS_FILE)) {
-            $this->modifyRecord();
-            $this->cacheIPs(8);
-            return true;
-        }
         $cache = json_decode(file_get_contents(CACHE_IPS_FILE), true);
 
         //缓存3600秒

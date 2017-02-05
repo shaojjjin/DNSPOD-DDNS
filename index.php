@@ -18,9 +18,10 @@ use Model\Ddns;
 
 $ddns = new Ddns($TOKEN, $config_arr['DOMAIN'], $config_arr['SUB']); //实例化
 
-$isUpdate = $ddns->checkIP();
+if (!file_exists(CACHE_IPS_FILE)) $ddns->cacheIPs(8); //判断缓存文件是否存在
+$isUpdate = $ddns->checkIP(); //判断ip是否发生变化
 
-if ($isUpdate == false) { //已经发生变化了
+if ($isUpdate == false) {
     $recordInfo = $ddns->getAllRecordData('info', $config_arr['SUB']); //当前域名记录数
     if ($recordInfo['record_total'] == 0) {
         //执行新增操作
