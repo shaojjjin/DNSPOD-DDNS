@@ -28,7 +28,11 @@ class Ddns {
         $this->sub_domain = $sub;
         $this->domain_id  = $this->getDomainId();
 
-        $this->ip = $this->getMyIP();
+        $ip = self::getMyIP();
+        while(!$ip) {
+            $ip = self::getMyIP();
+        }
+        $this->ip = $ip;
     }
 
     /*
@@ -170,8 +174,21 @@ class Ddns {
 //        $ip = file_get_contents('http://pv.sohu.com/cityjson?ie=utf-8');
         $ip = file_get_contents('http://www.leadnt.com/tools/ip.php');
 
+//        $ip_info = file_get_contents('http://ip.taobao.com/service/getIpInfo2.php?ip=myip');
+//        $ip_info = json_decode($ip_info, true);
+
+//        if ($ip_info['code'] !== 1 || !$ip_info) {
+//            $this->error = '获取当前ip失败';
+//            $this->log('003', $this->error);
+//            return false;
+//        } else {
+//            return trim($ip_info['data']['ip']);
+//        }
+
+
         if (!$ip) {
-            $this->log('003', '获取当前ip失败');
+            $this->error = '获取当前ip失败';
+            $this->log('003', $this->error);
             return false;
         }
 
