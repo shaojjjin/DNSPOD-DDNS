@@ -2,8 +2,6 @@
 /*
  * DNSPOD
  */
-namespace Model;
-
 class Ddns {
     // 用户token
     private $token ='';

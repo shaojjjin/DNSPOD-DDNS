@@ -12,9 +12,9 @@ $TOKEN      = $config_arr['TOKEN_ID'] .','. $config_arr['TOKEN'];
 $ServerChan_Url = $config_arr['SERVERCHAN_URL'].$config_arr['SERVERCHAN_KEY'].'.send';
 
 require 'functions.php';
-require 'Model/ddns.php';
+require 'ddns.php';
 
-use Model\Ddns;
+use Ddns;
 
 $ddns = new Ddns($TOKEN, $config_arr['DOMAIN'], $config_arr['SUB']); //实例化
 
