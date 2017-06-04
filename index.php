@@ -14,12 +14,14 @@ $ServerChan_Url = $config_arr['SERVERCHAN_URL'].$config_arr['SERVERCHAN_KEY'].'.
 require 'functions.php';
 require 'ddns.php';
 
-use Ddns;
-
 $ddns = new Ddns($TOKEN, $config_arr['DOMAIN'], $config_arr['SUB']); //实例化
 
-if (!file_exists(CACHE_IPS_FILE)) $ddns->cacheIPs(8); //判断缓存文件是否存在
-$isUpdate = $ddns->checkIP(); //判断ip是否发生变化
+if (!file_exists(CACHE_IPS_FILE)) {
+    $isUpdate = false;
+    $ddns->cacheIPs(8);
+}
+
+$isUpdate = isset($isUpdate) ? false : $ddns->checkIP(); //判断ip是否发生变化
 
 if ($isUpdate == false) {
     $recordInfo = $ddns->getAllRecordData('info', $config_arr['SUB']); //当前域名记录数
